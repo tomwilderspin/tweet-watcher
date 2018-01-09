@@ -1,0 +1,21 @@
+service: twitter-light 
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: prod
+  region: eu-west-1
+  role: arn:aws:iam::${opt:aws-account}:role/basic-lambda-execute
+
+functions:
+  hello:
+    handler: handler.checkTweets
+    environment:
+      REQUEST_TOKEN: ${file(../env.yml):token}
+      T_CONSUMER_KEY: ${file(../env.yml):twitterConsumer}
+      T_CONSUMER_SECRET: ${file(../env.yml):twitterSecret}
+      SEARCH_TERM: "#beerbybeer OR #tryanuary OR #craftbeerhour OR #buildthebeermap"
+    events:
+      - http:
+          path: new-tweet
+          method: get
